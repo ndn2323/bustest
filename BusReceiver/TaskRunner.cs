@@ -27,7 +27,7 @@ namespace BusReceiver
                 await receiver.DeadLetterMessageAsync(msg);
             }
 
-            Log("Starting receive from regular dead letter queue");
+            Log("Starting receive from dead letter queue");
             var msgListDlq = await receiverDlq.ReceiveMessagesAsync(maxMsgCount, TimeSpan.FromMilliseconds(1000));            
             Log(msgListDlq.Count.ToString() + " messages found in dlq");
             foreach (var msg in msgListDlq) {
