@@ -20,7 +20,7 @@ namespace BusReceiver
             var receiverDlq = client.CreateReceiver(topicName, subscriberDlqName, options);
 
             Log("Starting receive from regular queue");
-            var msgList = await receiver.ReceiveMessagesAsync(maxMsgCount, TimeSpan.FromMilliseconds(1000));
+            var msgList = await receiver.ReceiveMessagesAsync(maxMsgCount, TimeSpan.FromMilliseconds(500));
             Log(msgList.Count.ToString() + " messages found");
             foreach (var msg in msgList)
             {
@@ -28,12 +28,12 @@ namespace BusReceiver
             }
 
             Log("Starting receive from dead letter queue");
-            var msgListDlq = await receiverDlq.ReceiveMessagesAsync(maxMsgCount, TimeSpan.FromMilliseconds(1000));            
+            var msgListDlq = await receiverDlq.ReceiveMessagesAsync(maxMsgCount, TimeSpan.FromMilliseconds(500));            
             Log(msgListDlq.Count.ToString() + " messages found in dlq");
             foreach (var msg in msgListDlq) {
-                Log(Encoding.ASCII.GetString(msg.Body));
+                Log("MessageId: " + msg.MessageId + " Body: " + Encoding.ASCII.GetString(msg.Body));
                 // if some condition, archieve message to some data store, else abandon it to be picked up again
-                // for this test I'm abandoning all messages
+                // for this test I'm abandoning all messages                
                 await receiverDlq.AbandonMessageAsync(msg);
             }
 
